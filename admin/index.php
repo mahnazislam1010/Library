@@ -3,17 +3,17 @@ session_start();
 include('includes/config.php');
 if(isset($_POST['login']))
 {
-$username=$_POST['username'];
+$email=$_POST['email'];
 $password=md5($_POST['password']);
-$sql ="SELECT UserName,Password FROM admin WHERE UserName=:username and Password=:password";
+$sql ="SELECT EmailId,Password FROM admin WHERE EmailId=:email and Password=:password";
 $query= $dbh -> prepare($sql);
-$query-> bindParam(':username', $username, PDO::PARAM_STR);
+$query-> bindParam(':email', $email, PDO::PARAM_STR);
 $query-> bindParam(':password', $password, PDO::PARAM_STR);
 $query-> execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
 if($query->rowCount() > 0)
 {
-$_SESSION['alogin']=$_POST['username'];
+$_SESSION['alogin']=$_POST['email'];
 echo "<script type='text/javascript'> document.location ='dashboard.php'; </script>";
 } else{
 echo "<script>alert('Invalid Details');</script>";
@@ -61,8 +61,8 @@ echo "<script>alert('Invalid Details');</script>";
 <form role="form" method="post">
 
 <div class="form-group">
-<label>Enter Username</label>
-<input class="form-control" type="text" name="username" required />
+<label>Enter Email</label>
+<input class="form-control" type="text" name="email" required />
 </div>
 <div class="form-group">
 <label>Password</label>

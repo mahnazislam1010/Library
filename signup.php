@@ -22,7 +22,12 @@ $mobileno=$_POST['mobileno'];
 $email=$_POST['email']; 
 $password=md5($_POST['password']); 
 $status=1;
-$sql="INSERT INTO  tblstudents(StudentId,FullName,MobileNumber,EmailId,Password,Status) VALUES(:StudentId,:fname,:mobileno,:email,:password,:status)";
+
+
+$token = bin2hex(random_bytes(15));
+$active = 'inactive';
+
+$sql="INSERT INTO  tblstudents(StudentId,FullName,MobileNumber,EmailId,Password,Status,token,active) VALUES(:StudentId,:fname,:mobileno,:email,:password,:status,:token, :active)";
 $query = $dbh->prepare($sql);
 $query->bindParam(':StudentId',$StudentId,PDO::PARAM_STR);
 $query->bindParam(':fname',$fname,PDO::PARAM_STR);
@@ -30,10 +35,63 @@ $query->bindParam(':mobileno',$mobileno,PDO::PARAM_STR);
 $query->bindParam(':email',$email,PDO::PARAM_STR);
 $query->bindParam(':password',$password,PDO::PARAM_STR);
 $query->bindParam(':status',$status,PDO::PARAM_STR);
+$query->bindParam(':token',$token,PDO::PARAM_STR);
+$query->bindParam(':active',$active,PDO::PARAM_STR);
 $query->execute();
 $lastInsertId = $dbh->lastInsertId();
 if($lastInsertId)
 {
+
+
+
+
+
+
+
+    $to_email = $email;
+    $subject = "Email activation";
+    $body = "Hi, $fname. <br> Click here to activate your account <br>
+    http://localhost/Library/verify.php?token=$token ";
+    $headers .= "MIME-Version: 1.0"."\r\n";
+    $headers .= 'Content-type: text/html; charset=iso-8859-1'."\r\n";
+    $headers .= 'From: nehasarker49@gmail.com'."\r\n";
+    if(mail($to_email, $subject, $body, $headers)){
+        $_SESSION['msg']= "Check your mail to activate your account $email";
+
+        echo "<script type='text/javascript'> document.location ='index.php'; </script>";
+    } else {
+        echo "Email sending failed...";
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 echo '<script>alert("Your Registration successfull and your student id is  "+"'.$StudentId.'")</script>';
 }
 else 
@@ -117,7 +175,7 @@ error:function (){}
 
 <div class="form-group">
 <label>Mobile Number :</label>
-<input class="form-control" type="text" name="mobileno" maxlength="11" autocomplete="off" required />
+<input class="form-control" type="text" name="mobileno" maxlength="10" autocomplete="off" required />
 </div>
                                         
 <div class="form-group">

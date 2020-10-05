@@ -2,11 +2,21 @@
 session_start();
 $dbh = mysqli_connect('localhost','root','mahnazrafiaislam','library');
     $search=$_GET['s'];
-    $query="SELECT tblbooks.BookName,tblbooks.BookImage,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.id as bookid from  tblbooks join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId where BookName like '%$search%'";
+    $query="SELECT tblbooks.BookName,tblbooks.BookImage,tblbooks.BookPdf,tblbooks.BookSummary,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.id as bookid from  tblbooks join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId where BookName like '%$search%'";
     $res=mysqli_query($dbh,$query) or die("Can't Execute Query...");
 
 error_reporting(0);
 include('includes/config.php');
+if(isset($_GET['del']))
+{
+$id=$_GET['del'];
+$sql = "select from tblbooks  WHERE id=:id";
+$query = $dbh->prepare($sql);
+$query -> bindParam(':id',$id, PDO::PARAM_STR);
+$query -> execute();
+// header('location:manage-books.php');
+
+}
 
 if(strlen($_SESSION['login'])==0)
   { 
@@ -29,7 +39,9 @@ else{?>
     <link href="assets/css/style.css" rel="stylesheet" />
     <!-- GOOGLE FONT -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
-
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
       <!------MENU SECTION START-->
@@ -58,9 +70,140 @@ else{?>
                                                     
                                                     echo '<td width="20%" align="center" style="font-size: 16px;">
                                                         <a href="detail.php?id='.$row['b_id'].'" ><br>
-                                                        <img src="'.$row['BookImage'].'" width="80" height="100">
+                                                        <img src="assets/img/'.$row['BookImage'].'" width="80" height="100">
                                                         <br>'.$row['BookName'].'</a>
-                                                    </td>';
+
+
+
+                                                        <br>';?>
+
+
+                                                        
+                                                        <button class="btn btn-danger" data-toggle="modal" data-target="#ab<?php echo $row['bookid']; ?>" ><i class="fa fa-pencil"></i> Preview</button>
+                                                        
+
+                                                        <button class="btn btn-primary" data-toggle="modal" data-target="#<?php echo $row['bookid']; ?>" ><i class="fa fa-pencil"></i> Read</button>
+
+                                                        <?php echo '
+                                                        
+                                                        <a href="download.php?file=assets/img/'.$row['BookPdf'].'">  <button class="btn btn-success"><i class="fa fa-pencil"></i> Download</button>
+                                                        
+                                                        <a href="favorites-book.php?bookid='.$row['bookid'].'"><img src="bookmark.png" height="25px" width="25px"></a>
+                                                    </td>'; ?>
+
+
+
+<!-- Modal to Preview Book-->
+<div class = "modal fade" id = "ab<?php echo $row['bookid'];?>" tabindex = "-1" role = "dialog" aria-hidden = "true" >
+    
+   <div class = "modal-dialog modal-lg">
+      <div class = "modal-content">
+          
+         <div class = "modal-header">
+            <h4 class = "modal-title">
+               Book Details
+            
+            
+            <!-- <button type = "button" class = "close" data-dismiss = "modal" aria-hidden = "true">
+               <b>X</b>
+            </button> -->
+            <button type = "button" class = "minimum" data-dismiss = "modal" aria-hidden = "true" style="float: right;">
+               <b>X</b>
+            </button>
+            
+            <button type = "button" class = "max" data-dismiss = "modal" aria-hidden = "true" style="float: right;">
+               <b>[]</b>
+            </button>
+
+
+
+            <button type = "button" class = "modalMinimize" data-dismiss = "modal" aria-hidden = "true" style="float: right;">
+               <b>_</b>
+            </button>
+            
+            
+            </h4>
+         </div>
+          
+         <div id = "modal-body">
+          <?php echo '
+            <embed src="assets/img/'.$row['BookSummary'].'" height="550px" width="892px"  />'?>
+            <!-- assets/img/'.$row['BookPdf'].' -->
+
+         </div>
+          
+         <div class = "modal-footer">
+            <button type = "button" class = "btn btn-default" data-dismiss = "modal">
+               OK
+            </button>
+         </div>
+          
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal-dialog -->
+    
+</div><!-- /.modal  to Preview Book-->
+
+
+
+
+
+
+
+<!-- Modal to Read Book-->
+<div class = "modal fade" id = "<?php echo $row['bookid'];?>" tabindex = "-1" role = "dialog" aria-hidden = "true" >
+    
+   <div class = "modal-dialog modal-lg">
+      <div class = "modal-content">
+          
+         <div class = "modal-header">
+            <h4 class = "modal-title">
+               Book Details
+            
+ 
+            <button type = "button" class = "close" data-dismiss = "modal" aria-hidden = "true">
+               <b>X</b>
+            </button>
+            </h4>
+         </div>
+          
+         <div id = "modal-body">
+          <?php echo '
+            <embed src="assets/img/'.$row['BookPdf'].'" height="550px" width="892px"  />'?>
+            <!-- assets/img/'.$row['BookPdf'].' -->
+
+         </div>
+          
+         <div class = "modal-footer">
+            <button type = "button" class = "btn btn-default" data-dismiss = "modal">
+               OK
+            </button>
+         </div>
+          
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal-dialog -->
+    
+</div><!-- /.modal  to Read Book-->
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                    
+                                                    <?php
                                                     $count++;                           
                                                     
                                                     if($count==4)
@@ -69,9 +212,35 @@ else{?>
                                                         $count=0;
                                                     }
                                                 }
+
                                             ?>
                                             
                                         </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                     </div>
     </div>
      <!-- CONTENT-WRAPPER SECTION END-->
@@ -79,11 +248,25 @@ else{?>
       <!-- FOOTER SECTION END-->
     <!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
     <!-- CORE JQUERY  -->
+
+
+
+
+
     <script src="assets/js/jquery-1.10.2.js"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script src="assets/js/bootstrap.js"></script>
       <!-- CUSTOM SCRIPTS  -->
     <script src="assets/js/custom.js"></script>
+
+
+
+
+
+
+
+
+    
 </body>
 </html>
 <?php } ?>

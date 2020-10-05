@@ -23,6 +23,8 @@ body {
     line-height:28px;
    
 }
+
+
 .set-radius-zero {
     border-radius:0px;
     -moz-border-radius:0px;
@@ -244,4 +246,3 @@ height: 60px;
     .footer-section a, .footer-section a:hover {
         color:#000;
     }
-

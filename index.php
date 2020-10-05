@@ -14,7 +14,21 @@ if ($_POST["vercode"] != $_SESSION["vercode"] OR $_SESSION["vercode"]=='')  {
         else {
 $email=$_POST['emailid'];
 $password=md5($_POST['password']);
-$sql ="SELECT EmailId,Password,StudentId,Status FROM tblstudents WHERE EmailId=:email and Password=:password";
+
+
+
+
+
+
+
+
+
+
+
+
+
+//for student
+$sql ="SELECT EmailId,Password,StudentId,Status,active FROM tblstudents WHERE EmailId=:email and Password=:password and active='active' ";
 $query= $dbh -> prepare($sql);
 $query-> bindParam(':email', $email, PDO::PARAM_STR);
 $query-> bindParam(':password', $password, PDO::PARAM_STR);
@@ -31,15 +45,46 @@ $_SESSION['login']=$_POST['emailid'];
 echo "<script type='text/javascript'> document.location ='dashboard.php'; </script>";
 } else {
 echo "<script>alert('Your Account Has been blocked .Please contact admin');</script>";
-
 }
 }
-
 } 
+else{
+//for admin
+$sql1 ="SELECT EmailId,Password FROM admin WHERE EmailId=:email and Password=:password";
+$query1= $dbh -> prepare($sql1);
+$query1-> bindParam(':email', $email, PDO::PARAM_STR);
+$query1-> bindParam(':password', $password, PDO::PARAM_STR);
+$query1-> execute();
+$answers=$query1->fetchAll(PDO::FETCH_OBJ);
 
+if($query1->rowCount() > 0)
+{
+$_SESSION['alogin']=$_POST['emailid'];
+echo "<script type='text/javascript'> document.location ='admin/dashboard.php'; </script>";
+}
 else{
 echo "<script>alert('Invalid Details');</script>";
 }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 }
 ?>
@@ -78,6 +123,47 @@ echo "<script>alert('Invalid Details');</script>";
  LOGIN FORM
 </div>
 <div class="panel-body">
+
+
+
+
+
+
+
+
+
+<div>
+    <p class="bg-success text-white px-4"> 
+        <?php 
+if (isset($_SESSION['msg'])) {
+    echo $_SESSION['msg']; 
+} 
+ ?> 
+ </p>    
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <form role="form" method="post">
 
 <div class="form-group">

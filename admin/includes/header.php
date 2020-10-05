@@ -1,4 +1,4 @@
-<div class="navbar navbar-inverse set-radius-zero" >
+<div class="navbar navbar-inverse set-radius-zero" style="background-color: #   ;" >
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -19,7 +19,7 @@
         </div>
     </div>
     <!-- LOGO HEADER END-->
-    <section class="menu-section">
+    <section class="menu-section" style="background-color: #    ;">
         <div class="container">
             <div class="row ">
                 <div class="col-md-12">

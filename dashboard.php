@@ -57,7 +57,7 @@ $results1=$query1->fetchAll(PDO::FETCH_OBJ);
 $issuedbooks=$query1->rowCount();
 ?>
 
-                            <h3> </h3>
+                            <h3> <?php echo htmlentities($issuedbooks);?></h3>
                             Book Issued
                         </div>
                     </div>
@@ -76,7 +76,7 @@ $results2=$query2->fetchAll(PDO::FETCH_OBJ);
 $returnedbooks=$query2->rowCount();
 ?>
 
-                            <h3></h3>
+                            <h3><?php echo htmlentities($returnedbooks);?></h3>
                           Books Not Returned Yet
                         </div>
                     </div>

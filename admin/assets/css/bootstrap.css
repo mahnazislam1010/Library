@@ -1190,7 +1190,8 @@ a.bg-primary:hover {
   background-color: #3071a9;
 }
 .bg-success {
-  background-color: #dff0d8;
+    background: #84ce9b;
+  border-radius: 5px;
 }
 a.bg-success:hover {
   background-color: #c1e2b3;
